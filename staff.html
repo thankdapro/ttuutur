@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff — CMDBLOCK</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="assets/favicon/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=14">
+<style>
+  .staff-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .staff-tab {
+    padding: 8px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-dim);
+    font-family: 'Silkscreen', monospace;
+    font-size: 0.72rem; letter-spacing: 1.1px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .staff-tab:hover { color: var(--text); border-color: var(--border-strong); }
+  .staff-tab.active { background: rgba(85,255,85,0.08); border-color: rgba(85,255,85,0.3); color: var(--cmd-green); }
+  .staff-tab .count {
+    margin-left: 8px; padding: 2px 6px;
+    background: rgba(255,255,255,0.04); border-radius: 6px;
+    font-size: 0.62rem; color: var(--text-faint);
+  }
+  .staff-tab.active .count { background: rgba(85,255,85,0.12); color: var(--cmd-green); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .moderation-card, .user-card {
+    padding: 20px 22px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+  .moderation-card .meta, .user-card .meta {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .moderation-card .name, .user-card .name {
+    font-family: 'Silkscreen', monospace; font-size: 0.72rem; letter-spacing: 1px;
+    color: var(--cmd-green);
+  }
+  .moderation-card .date, .user-card .meta-r { font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; color: var(--text-faint); }
+  .moderation-card .stars { color: #FCDB05; font-family: monospace; }
+  .moderation-card .text { color: var(--text); line-height: 1.55; white-space: pre-wrap; word-wrap: break-word; margin: 10px 0 16px; }
+  .moderation-card .actions { display: flex; gap: 10px; }
+
+  .user-card { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
+  .user-card .who { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .user-card .who h4 { font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--text); margin: 0; }
+  .user-card .who .email { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .user-card .who .uid { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-faint); }
+  .user-card .actions { display: flex; gap: 8px; }
+  .role-pill {
+    display: inline-block; margin-left: 6px;
+    padding: 2px 6px; border-radius: 4px;
+    font-family: 'Silkscreen', monospace; font-size: 0.55rem; letter-spacing: 1.1px;
+    background: rgba(85,255,85,0.08); color: var(--cmd-green); border: 1px solid rgba(85,255,85,0.2);
+  }
+  .role-pill.staff { background: rgba(252,219,5,0.08); color: var(--gold); border-color: rgba(252,219,5,0.3); }
+
+  .search-row {
+    display: flex; gap: 10px; margin-bottom: 16px;
+  }
+  .search-input {
+    flex: 1;
+    padding: 10px 14px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.92rem;
+  }
+  .search-input:focus { outline: none; border-color: rgba(85,255,85,0.4); }
+
+  .empty, .loading {
+    text-align: center; padding: 60px 24px; color: var(--text-dim);
+  }
+  .gate {
+    max-width: 480px; margin: 100px auto;
+    padding: 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+  }
+  .gate h2 { font-family: 'Silkscreen', monospace; font-size: 0.95rem; letter-spacing: 1.4px; margin-bottom: 16px; }
+  .gate p { color: var(--text-dim); margin-bottom: 24px; }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<nav class="app-nav">
+  <div class="container">
+    <a href="index.html" class="logo"><img src="assets/favicon/favicon.png" alt="" class="logo-cube"><span>CMD<span class="accent">BLOCK</span></span></a>
+    <ul class="nav-links">
+      <li><a href="learn.html">Learn</a></li><li><a href="projects.html">Projects</a></li><li><a href="resources.html">Resources</a></li><li><a href="tools.html">Tools</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="connect.html">Connect</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="nav-icon-btn edition-switcher" data-edition-switcher data-edition="bedrock" title="Edition: BEDROCK — click to switch" aria-label="Switch edition"><img src="assets/icons/bedrock.png" alt=""></button>
+      <a href="#" class="nav-cta desktop-only" data-account-cta>Sign Up</a>
+      <button class="mobile-toggle" id="menuBtn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <span class="pill" style="background:rgba(252,219,5,0.08);border-color:rgba(252,219,5,0.3);color:var(--gold);"><span class="pill-badge" style="background:var(--gold);color:#000;">STAFF</span> internal tool</span>
+    <h1 style="margin-top:24px;">Moderation <span class="green">panel.</span></h1>
+    <p>Approve flagged reviews and manage user accounts. Visible only to staff.</p>
+  </div>
+</section>
+
+<section class="section" id="staffSection">
+  <div class="container" id="staffRoot">
+    <div class="loading">Checking access…</div>
+  </div>
+</section>
+
+<footer class="app-footer">
+  <div class="container">
+    <div class="foot-bottom" style="border-top:none;"><span class="pixel">CMDBLOCK STAFF</span><span>Internal use only.</span></div>
+  </div>
+</footer>
+
+<div class="modal" id="signupModal"><div class="modal-card"><button class="modal-close" onclick="closeModal('signupModal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><h2>CREATE ACCOUNT</h2><p class="modal-sub">Track your progress. Free, no card.</p><form id="signupForm"><input class="input" type="text" name="name" placeholder="Name" maxlength="24" required><input class="input" type="email" name="email" placeholder="you@example.com" required><div class="input-row"><input class="input" type="password" name="password" placeholder="Password" required minlength="6"><input class="input" type="password" name="confirm" placeholder="Confirm" required minlength="6"></div><div class="modal-error"></div><button class="btn btn-primary" type="submit">Create account</button></form><div class="modal-foot">Have an account? <a href="#" onclick="closeModal('signupModal');openModal('signinModal');return false;">Sign in</a></div></div></div>
+<div class="modal" id="signinModal"><div class="modal-card"><button class="modal-close" onclick="closeModal('signinModal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><h2>SIGN IN</h2><p class="modal-sub">Welcome back.</p><form id="signinForm"><input class="input" type="email" name="email" placeholder="you@example.com" required><input class="input" type="password" name="password" placeholder="Password" required><div class="modal-error"></div><button class="btn btn-primary" type="submit">Sign in</button></form><div class="modal-foot">New here? <a href="#" onclick="closeModal('signinModal');openModal('signupModal');return false;">Create account</a></div></div></div>
+
+<script src="scripts/firebase-config.js?v=9"></script>
+<script src="scripts/cmdblock.js?v=15"></script>
+<script src="scripts/staff.js?v=1"></script>
+</body>
+</html>

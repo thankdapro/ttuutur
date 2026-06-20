@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>Projects Hard — CMDBLOCK</title>
+<link rel="icon" type="image/png" href="assets/favicon/favicon.png">
+</head><body style="background:#07080B;color:#9A9CA3;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+<a id="goLink" href="lesson.html?course=projects-hard" style="color:#55FF55;text-decoration:none;">Loading…</a>
+<script>
+  // Members-only. Check account before routing to the lesson; guests bounce to the
+  // unlocked landing page where the lock badge and signup CTA live.
+  (function () {
+    var signedIn = false;
+    try { signedIn = !!JSON.parse(localStorage.getItem('cmdblock-account-v2') || 'null'); } catch (_) {}
+    var dest = signedIn ? 'lesson.html?course=projects-hard' : 'projects.html';
+    document.getElementById('goLink').href = dest;
+    location.replace(dest);
+  })();
+</script>
+</body></html>

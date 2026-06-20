@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reviews — CMDBLOCK</title>
+<meta name="description" content="Read what other builders are saying about cmdblock. Sign in to leave your own.">
+<link rel="icon" type="image/png" href="assets/favicon/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=14">
+<style>
+  .review-write {
+    max-width: 720px; margin: 0 auto 56px;
+    padding: 28px;
+    background: linear-gradient(180deg, rgba(85,255,85,0.04), rgba(85,255,85,0.01));
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+  }
+  .review-write .write-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .review-write h2 {
+    font-family: 'Silkscreen', monospace;
+    font-size: 0.85rem; letter-spacing: 1.2px; color: var(--text);
+  }
+  .review-write .who {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem; color: var(--text-faint);
+  }
+  .review-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 14px 16px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    resize: vertical;
+  }
+  .review-textarea:focus { outline: none; border-color: rgba(85,255,85,0.4); background: rgba(0,0,0,0.4); }
+  .review-textarea:disabled { opacity: 0.6; cursor: not-allowed; }
+  .review-footer {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-top: 12px; flex-wrap: wrap;
+  }
+  .char-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .char-count.warn { color: var(--gold); }
+  .char-count.over { color: var(--cmd-red); }
+  .star-row {
+    display: inline-flex; align-items: center; gap: 2px;
+    margin-bottom: 12px;
+  }
+  .star-row .star-btn {
+    background: none; border: none; padding: 4px; cursor: pointer;
+    color: rgba(255,255,255,0.18); transition: color 0.15s, transform 0.1s;
+    line-height: 0;
+  }
+  .star-row .star-btn:hover { transform: scale(1.1); }
+  .star-row .star-btn.lit { color: #FCDB05; }
+  .star-row .star-btn svg { width: 22px; height: 22px; }
+  .star-label {
+    margin-left: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem; color: var(--text-faint);
+  }
+  .review-card .star-row { margin-bottom: 0; }
+  .review-card .star-row .star-btn { padding: 0; cursor: default; }
+  .review-card .star-row .star-btn:hover { transform: none; }
+  .review-card .star-row .star-btn svg { width: 14px; height: 14px; }
+
+  .review-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  .review-card {
+    padding: 22px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: border-color 0.2s;
+  }
+  .review-card:hover { border-color: var(--border-strong); }
+  .review-meta {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .review-name {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Silkscreen', monospace;
+    font-size: 0.72rem; letter-spacing: 1.1px;
+    color: var(--cmd-green);
+  }
+  .review-name .avatar {
+    width: 22px; height: 22px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(85,255,85,0.1);
+    border: 1px solid rgba(85,255,85,0.2);
+    border-radius: 6px;
+    font-size: 0.7rem; color: var(--cmd-green);
+  }
+  .review-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem; color: var(--text-faint);
+  }
+  .review-text {
+    color: var(--text);
+    font-size: 0.96rem; line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .review-empty, .review-loading {
+    text-align: center; padding: 60px 24px;
+    color: var(--text-dim);
+  }
+  .review-empty .pixel-icon { display: inline-flex; margin-bottom: 12px; color: var(--text-faint); opacity: 0.6; }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<nav class="app-nav">
+  <div class="container">
+    <a href="index.html" class="logo"><img src="assets/favicon/favicon.png" alt="" class="logo-cube"><span>CMD<span class="accent">BLOCK</span></span></a>
+    <ul class="nav-links">
+      <li><a href="learn.html">Learn</a></li><li><a href="projects.html">Projects</a></li><li><a href="resources.html">Resources</a></li><li><a href="tools.html">Tools</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="connect.html">Connect</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="nav-icon-btn" data-search-trigger title="Search (⌘K)" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></button><button class="nav-icon-btn edition-switcher" data-edition-switcher data-edition="bedrock" title="Edition: BEDROCK — click to switch" aria-label="Switch edition"><img src="assets/icons/bedrock.png" alt=""></button>
+      <a href="#" class="nav-cta desktop-only" data-account-cta>Sign Up</a>
+      <button class="mobile-toggle" id="menuBtn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="learn.html">Learn</a><a href="projects.html">Projects</a><a href="resources.html">Resources</a><a href="tools.html">Tools</a><a href="reviews.html">Reviews</a><a href="connect.html">Connect</a>
+  <a href="#" class="nav-cta" data-account-cta>Sign Up</a>
+</div>
+
+<section class="page-hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <span class="pill"><span class="pill-badge">REVIEWS</span> from the community</span>
+    <h1 style="margin-top:24px;">What builders <span class="green">are saying.</span></h1>
+    <p>Real thoughts from people who've used cmdblock. Sign in to leave your own.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="review-write" id="writeBox">
+      <!-- write form (signed-in) OR signup prompt (guest) rendered here -->
+    </div>
+
+    <div id="reviewList" class="review-list">
+      <div class="review-loading">Loading reviews…</div>
+    </div>
+  </div>
+</section>
+
+<footer class="app-footer">
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand"><a href="index.html" class="logo"><img src="assets/favicon/favicon.png" alt="" class="logo-cube"><span>CMD<span class="accent">BLOCK</span></span></a><p>Learn Minecraft commands the way creators actually use them.</p></div>
+      <div class="foot-col"><h5>Learn</h5><a href="learn.html">Courses</a><a href="projects.html">Projects</a><a href="resources.html">Resources</a><a href="tools.html">Tools</a></div>
+      <div class="foot-col"><h5>Community</h5><a href="reviews.html">Reviews</a><a href="connect.html">Connect</a><a href="connect.html">GitHub</a></div>
+      <div class="foot-col"><h5>Account</h5><a href="profile.html">Profile</a><a href="mailto:hi@cmdblock.org">Contact</a><a href="#" onclick="openModal('signinModal');return false;">Sign in</a></div>
+    </div>
+    <div class="foot-bottom"><span class="pixel">CMDBLOCK © 2026</span><span>Not affiliated with Mojang or Microsoft.</span></div>
+  </div>
+</footer>
+
+<div class="modal" id="signupModal"><div class="modal-card"><button class="modal-close" onclick="closeModal('signupModal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><h2>CREATE ACCOUNT</h2><p class="modal-sub">Track your progress. Free, no card.</p><form id="signupForm"><input class="input" type="text" name="name" placeholder="Name" maxlength="24" required><input class="input" type="email" name="email" placeholder="you@example.com" required><div class="input-row"><input class="input" type="password" name="password" placeholder="Password" required minlength="6"><input class="input" type="password" name="confirm" placeholder="Confirm" required minlength="6"></div><div class="modal-error"></div><button class="btn btn-primary" type="submit">Create account</button></form><div class="modal-foot">Have an account? <a href="#" onclick="closeModal('signupModal');openModal('signinModal');return false;">Sign in</a></div></div></div>
+<div class="modal" id="signinModal"><div class="modal-card"><button class="modal-close" onclick="closeModal('signinModal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><h2>SIGN IN</h2><p class="modal-sub">Welcome back.</p><form id="signinForm"><input class="input" type="email" name="email" placeholder="you@example.com" required><input class="input" type="password" name="password" placeholder="Password" required><div class="modal-error"></div><button class="btn btn-primary" type="submit">Sign in</button></form><div class="modal-foot">New here? <a href="#" onclick="closeModal('signinModal');openModal('signupModal');return false;">Create account</a></div></div></div>
+
+<script src="scripts/sheets-config.js?v=1"></script><script src="scripts/firebase-config.js?v=1"></script><script src="scripts/cmdblock.js?v=15"></script>
+<script>
+(function () {
+  const MAX = cmdblock.REVIEW_MAX || 1200;
+  const writeBox = document.getElementById('writeBox');
+  const reviewList = document.getElementById('reviewList');
+
+  function fmtDate(ts) {
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return '';
+    const now = new Date();
+    const diff = now - d;
+    const day = 86400000;
+    if (diff < 60_000) return 'just now';
+    if (diff < 3600_000) return Math.floor(diff / 60_000) + 'm ago';
+    if (diff < day) return Math.floor(diff / 3600_000) + 'h ago';
+    if (diff < day * 7) return Math.floor(diff / day) + 'd ago';
+    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  function escape(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
+  }
+
+  function renderWrite() {
+    const acc = cmdblock.getAccount();
+    if (!acc) {
+      writeBox.innerHTML = `
+        <div class="write-head">
+          <h2>LEAVE A REVIEW</h2>
+        </div>
+        <p style="color:var(--text-dim);margin:0 0 16px;">You need a free account to post. Takes 10 seconds.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="cmdblock.openModal('signupModal')">Create account</button>
+          <button class="btn btn-ghost" onclick="cmdblock.openModal('signinModal')">Sign in</button>
+        </div>`;
+      return;
+    }
+    const initial = (acc.name || acc.email || '?').trim().charAt(0).toUpperCase();
+    writeBox.innerHTML = `
+      <div class="write-head">
+        <h2>LEAVE A REVIEW</h2>
+        <span class="who">posting as <strong style="color:var(--cmd-green);">${escape(acc.name || acc.email.split('@')[0])}</strong></span>
+      </div>
+      <div class="star-row" id="starRow" role="radiogroup" aria-label="Star rating">
+        ${[1,2,3,4,5].map(n => `<button class="star-btn" data-star="${n}" type="button" aria-label="${n} star${n>1?'s':''}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></button>`).join('')}
+        <span class="star-label" id="starLabel">Tap a star to rate</span>
+      </div>
+      <textarea class="review-textarea" id="reviewText" placeholder="What did you build? What clicked? Any roadblocks?" maxlength="${MAX}"></textarea>
+      <div class="review-footer">
+        <span class="char-count" id="charCount">0 / ${MAX}</span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" id="submitBtn" disabled>Post review</button>
+        </div>
+      </div>
+      <div id="writeError" style="color:var(--cmd-red);font-size:0.85rem;margin-top:10px;display:none;"></div>`;
+    const ta = document.getElementById('reviewText');
+    const cc = document.getElementById('charCount');
+    const btn = document.getElementById('submitBtn');
+    const err = document.getElementById('writeError');
+    const starRow = document.getElementById('starRow');
+    const starLabel = document.getElementById('starLabel');
+    let rating = 0;
+    function paintStars(n) {
+      [...starRow.querySelectorAll('.star-btn')].forEach(b => {
+        b.classList.toggle('lit', parseInt(b.dataset.star, 10) <= n);
+      });
+      starLabel.textContent = n ? `${n}/5` : 'Tap a star to rate';
+      updateBtn();
+    }
+    function updateBtn() {
+      const n = ta.value.trim().length;
+      btn.disabled = n === 0 || ta.value.length > MAX || rating === 0;
+    }
+    starRow.addEventListener('click', (e) => {
+      const b = e.target.closest('.star-btn');
+      if (!b) return;
+      rating = parseInt(b.dataset.star, 10);
+      paintStars(rating);
+    });
+    ta.addEventListener('input', () => {
+      cc.textContent = `${ta.value.length} / ${MAX}`;
+      cc.classList.toggle('warn', ta.value.length > MAX * 0.85);
+      cc.classList.toggle('over', ta.value.length > MAX);
+      updateBtn();
+    });
+    btn.addEventListener('click', async () => {
+      btn.disabled = true; err.style.display = 'none';
+      try {
+        await cmdblock.submitReview(ta.value, rating);
+        ta.value = ''; cc.textContent = `0 / ${MAX}`;
+        rating = 0; paintStars(0);
+        cmdblock.toast?.('Review posted. Thanks!', { variant: 'success' });
+        await loadList();
+      } catch (e) {
+        err.textContent = e.message || 'Could not post review.';
+        err.style.display = 'block';
+        updateBtn();
+      }
+    });
+  }
+
+  async function loadList() {
+    reviewList.innerHTML = '<div class="review-loading">Loading reviews…</div>';
+    let reviews = [];
+    try { reviews = await cmdblock.listReviews({ limit: 50 }); } catch (e) { console.warn(e); }
+    if (!reviews.length) {
+      reviewList.innerHTML = `
+        <div class="review-empty">
+          <div class="pixel-icon" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              <line x1="8" y1="10" x2="16" y2="10"/>
+              <line x1="8" y1="14" x2="13" y2="14"/>
+            </svg>
+          </div>
+          <p>No reviews yet. Be the first to share what you built.</p>
+        </div>`;
+      return;
+    }
+    reviewList.innerHTML = reviews.map(r => {
+      const initial = (r.name || '?').trim().charAt(0).toUpperCase();
+      const stars = Math.max(1, Math.min(5, parseInt(r.rating, 10) || 5));
+      const starHtml = [1,2,3,4,5].map(n => `<button class="star-btn ${n <= stars ? 'lit' : ''}" tabindex="-1" disabled type="button"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg></button>`).join('');
+      return `
+        <article class="review-card">
+          <div class="review-meta">
+            <span class="review-name"><span class="avatar">${escape(initial)}</span>${escape(r.name || 'Anonymous')}</span>
+            <span class="review-date" title="${new Date(r.createdAt).toLocaleString()}">${fmtDate(r.createdAt)}</span>
+          </div>
+          <div class="star-row" aria-label="${stars} out of 5 stars">${starHtml}</div>
+          <div class="review-text" style="margin-top:8px;">${escape(r.text)}</div>
+        </article>`;
+    }).join('');
+  }
+
+  renderWrite();
+  loadList();
+  window.addEventListener('cmdblock:account', () => { renderWrite(); loadList(); });
+})();
+</script>
+</body>
+</html>
